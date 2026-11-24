@@ -3,6 +3,7 @@ name = "stash"
 version = "0.0.1"
 edition = "2024"
 description = "Browse, inspect, add and remove AI agent skills"
+license = "MIT"
 
 [dependencies]
 anyhow = "1.0.105"
