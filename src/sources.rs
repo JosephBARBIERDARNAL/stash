@@ -85,7 +85,7 @@ pub fn discover(home: &Path) -> Vec<Source> {
 pub fn scan_folder(root: &Path) -> Vec<Skill> {
     let mut skills = Vec::new();
     walk(root, 1, &mut skills);
-    skills.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    skills.sort_by_key(|s| s.name.to_lowercase());
     skills
 }
 
@@ -133,7 +133,7 @@ pub fn scan_plugins(plugins_dir: &Path) -> Vec<Skill> {
         dirs.sort();
         skills.extend(dirs.iter().map(|d| Skill::load(d, true)));
     }
-    skills.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    skills.sort_by_key(|s| s.name.to_lowercase());
     skills
 }
 
