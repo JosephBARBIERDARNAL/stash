@@ -42,7 +42,8 @@ impl Issue {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Ordered from best to worst.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Status {
     Valid,
     Warnings,
