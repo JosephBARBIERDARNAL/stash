@@ -477,7 +477,12 @@ impl StashApp {
                     RichText::new(label)
                         .size(12.5)
                         .color(if active { p.text } else { p.weak });
-                if ui.selectable_label(active, text).clicked() && !active {
+                let chip = egui::Button::new(text).fill(if active {
+                    p.hover
+                } else {
+                    Color32::TRANSPARENT
+                });
+                if ui.add(chip).clicked() && !active {
                     open = Some(file.clone());
                 }
             }
