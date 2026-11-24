@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, target: aarch64-apple-darwin, name: stash-macos-arm64 }
+          - { os: macos-latest, target: x86_64-apple-darwin, name: stash-macos-x64 }
+          - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu, name: stash-linux-x64 }
+          - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu, name: stash-linux-arm64 }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc, name: stash-windows-x64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev libxcb1-dev \
+            libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libgl1-mesa-dev
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+      - run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          APP=dist/stash.app
+          mkdir -p "$APP/Contents/MacOS"
+          cp target/${{ matrix.target }}/release/stash "$APP/Contents/MacOS/stash"
+          sed "s/__VERSION__/$VERSION/g" packaging/Info.plist > "$APP/Contents/Info.plist"
+          codesign --force --deep --sign - "$APP"
+          (cd dist && ditto -c -k --keepParent stash.app ../${{ matrix.name }}.zip)
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.name }}.tar.gz -C target/${{ matrix.target }}/release stash
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path target/${{ matrix.target }}/release/stash.exe -DestinationPath ${{ matrix.name }}.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}.*
+
+  release:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
