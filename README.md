@@ -12,7 +12,7 @@ Download the latest build for your system from [Releases](../../releases).
 - **Windows**: unzip and run `stash.exe`.
 - **Linux**: extract and run `./stash`.
 
-Or build it yourself: `cargo install --git <this repo url>`
+Or build it yourself: `cargo install --git https://github.com/JosephBARBIERDARNAL/stash`
 
 ## Use
 
