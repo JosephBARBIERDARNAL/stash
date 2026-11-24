@@ -7,7 +7,7 @@ description = "Browse, inspect, add and remove AI agent skills"
 [dependencies]
 anyhow = "1.0.105"
 dirs = "7.0.0"
-eframe = { version = "0.37.0", features = ["persistence"] }
+eframe = { version = "0.37.0", features = ["persistence", "accesskit"] }
 egui = "0.37.0"
 egui_commonmark = "0.26.0"
 open = "5.4.5"
