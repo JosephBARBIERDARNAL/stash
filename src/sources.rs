@@ -207,7 +207,7 @@ mod tests {
         let skills = scan_folder(&root);
         assert_eq!(skills.len(), 2);
         let linked = skills.iter().find(|s| s.name == "linked").unwrap();
-        assert_eq!(linked.link_target.as_deref(), Some(real.as_path()));
+        assert_eq!(linked.link_target, Some(fs::canonicalize(&real).unwrap()));
         assert!(linked.issues.is_empty());
         let gone = skills.iter().find(|s| s.name == "gone").unwrap();
         assert!(gone.issues[0].message.contains("Broken link"));

@@ -80,7 +80,8 @@ impl Skill {
         let link_target = fs::symlink_metadata(dir)
             .ok()
             .filter(|m| m.file_type().is_symlink())
-            .and_then(|_| fs::read_link(dir).ok());
+            // Resolved to an absolute path; a broken link keeps its raw target.
+            .and_then(|_| fs::canonicalize(dir).or_else(|_| fs::read_link(dir)).ok());
 
         let (manifest, issues) = match fs::read_to_string(dir.join(SKILL_FILE)) {
             Ok(content) => check(&folder, &content),
