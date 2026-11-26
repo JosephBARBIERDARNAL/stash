@@ -4,7 +4,7 @@ See, add and remove the AI skills installed on your computer.
 
 stash finds skills for any AI provider and `~/.agents`, and lets you add/change/remove/validate any skill.
 
-![The stash window in dark mode. On the left, a searchable list of installed skills, each with a status dot and a lock on read-only ones. On the right, the selected skill, dataviz-design: its description, an "Available in: Codex" pill, its folder path, a green "Valid" check, and a preview of its SKILL.md.](./app.png)
+![The stash window in dark mode. On the left, a searchable list of installed skills. On the right, the selected skill, dataviz-design: its description, an "Available in: Codex" pill, its folder path, a green "Valid" check, and a preview of its SKILL.md.](./app.png)
 
 <br>
 
@@ -16,7 +16,13 @@ Download the latest build for your system from [Releases](../../releases).
 - **Windows**: unzip and run `stash.exe`.
 - **Linux**: extract and run `./stash`.
 
-Or build it yourself: `cargo install --git https://github.com/JosephBARBIERDARNAL/stash`
+Or build it yourself:
+
+```sh
+cargo install --git https://github.com/JosephBARBIERDARNAL/stash
+```
+
+<br>
 
 ## License
 
